@@ -9,6 +9,7 @@ require('dotenv').config();
 const port = 5000;
 
 app.use(cors());
+app.use(express.urlencoded({ extended: false }))
 app.use(express.json());
 app.use(fileUpload());
 

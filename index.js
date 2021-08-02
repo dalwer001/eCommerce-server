@@ -17,8 +17,36 @@ const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 client.connect(err => {
     const productCollection = client.db(`${process.env.DB_NAME}`).collection("products");
-    console.log('SUCCESSFULLY DONE');
     const offerCollection = client.db(`${process.env.DB_NAME}`).collection("offerProducts");
+    const vendorsCollection = client.db(`${process.env.DB_NAME}`).collection("vendors");
+    console.log('SUCCESSFULLY DONE');
+
+
+    app.post('/register', async (req, res) => {
+        const { firstName, lastName, companyName, contactNumber, email, password } = req.body;
+        if (!firstName || !lastName || !companyName || !contactNumber || !email || !password) {
+            return res.status.json({ error: "Please filled the field properly" });
+        }
+
+        try {
+            const userExist = await vendorsCollection.findOne({ email: email });
+
+            if (userExist) {
+                return res.status(422).json({ error: "Email already Exist" });
+            }
+            else {
+                vendorsCollection.insertOne({ firstName, lastName, companyName, contactNumber, email, password })
+                    .then(result => {
+                        res.send(result.insertCount > 0);
+                    });
+                res.status(201).json({ message: "user registered successfully" });
+            }
+        }
+        catch (err) {
+            console.log(err);
+        }
+    })
+
 
     app.post('/addProduct', (req, res) => {
 
@@ -45,35 +73,35 @@ client.connect(err => {
             })
     })
 
-    app.get('/products',(req,res)=>{
+    app.get('/products', (req, res) => {
         productCollection.find({})
-        .toArray((err,documents)=>{
-            res.send(documents);
-        })
+            .toArray((err, documents) => {
+                res.send(documents);
+            })
     })
 
-    app.get('/products/:id',(req,res)=>{
+    app.get('/products/:id', (req, res) => {
         const id = ObjectID(req.params.id)
-        productCollection.find({_id:id})
-        .toArray((err,result)=>{
-            res.send(result[0]);
-        })
+        productCollection.find({ _id: id })
+            .toArray((err, result) => {
+                res.send(result[0]);
+            })
     })
 
 
-    app.get('/offerProducts',(req,res)=>{
+    app.get('/offerProducts', (req, res) => {
         offerCollection.find({})
-        .toArray((err,documents)=>{
-            res.send(documents);
-        })
+            .toArray((err, documents) => {
+                res.send(documents);
+            })
     })
 
-    app.get('/offerProduct/:id',(req,res)=>{
+    app.get('/offerProduct/:id', (req, res) => {
         const id = ObjectID(req.params.id)
-        offerCollection.find({_id:id})
-        .toArray((err,result)=>{
-            res.send(result[0]);
-        })
+        offerCollection.find({ _id: id })
+            .toArray((err, result) => {
+                res.send(result[0]);
+            })
     })
 
 
@@ -102,12 +130,6 @@ client.connect(err => {
                 res.send(result.insertCount > 0);
             })
     })
-
-
-
-
-
-
 
 
 

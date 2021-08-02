@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const { MongoClient } = require('mongodb');
 const fileUpload = require('express-fileupload');
+const ObjectID = require('mongodb').ObjectID;
 const cors = require('cors');
 require('dotenv').config();
 
@@ -43,7 +44,20 @@ client.connect(err => {
         })
     })
 
+    app.get('/offerProducts',(req,res)=>{
+        offerCollection.find({})
+        .toArray((err,documents)=>{
+            res.send(documents);
+        })
+    })
 
+    app.get('/offerProduct/:id',(req,res)=>{
+        const id = ObjectID(req.params.id)
+        offerCollection.find({_id:id})
+        .toArray((err,result)=>{
+            res.send(result[0]);
+        })
+    })
 
 
 

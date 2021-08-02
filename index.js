@@ -1,8 +1,9 @@
 const express = require('express');
 const app = express();
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb');
+const ObjectID = require('mongodb').ObjectId;
+
 const fileUpload = require('express-fileupload');
-const ObjectID = require('mongodb').ObjectID;
 const cors = require('cors');
 require('dotenv').config();
 
@@ -51,6 +52,15 @@ client.connect(err => {
             res.send(documents);
         })
     })
+
+    app.get('/products/:id',(req,res)=>{
+        const id = ObjectID(req.params.id)
+        productCollection.find({_id:id})
+        .toArray((err,result)=>{
+            res.send(result[0]);
+        })
+    })
+
 
     app.get('/offerProducts',(req,res)=>{
         offerCollection.find({})

@@ -2,7 +2,6 @@ const express = require('express');
 const app = express();
 const { MongoClient, ObjectId } = require('mongodb');
 const ObjectID = require('mongodb').ObjectId;
-
 const fileUpload = require('express-fileupload');
 const cors = require('cors');
 require('dotenv').config();
@@ -110,7 +109,7 @@ client.connect(err => {
         const file = req.files.file;
         const title = req.body.title;
         const description = req.body.description;
-        const price = req.body.price;
+        const mainPrice = req.body.mainPrice;
         const offer = req.body.offer;
         const size = req.body.size;
         const category = req.body.category;
@@ -125,7 +124,7 @@ client.connect(err => {
             img: Buffer.from(encImg, 'base64')
         };
 
-        offerCollection.insertOne({ title, description, price, offer, size, category, type, quantity, image })
+        offerCollection.insertOne({ title, description, mainPrice, offer, size, category, type, quantity, image })
             .then(result => {
                 res.send(result.insertCount > 0);
             })

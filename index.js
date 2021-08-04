@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const { MongoClient, ObjectId } = require('mongodb');
 const ObjectID = require('mongodb').ObjectId;
+const jwt=require('jsonwebtoken');
 const fileUpload = require('express-fileupload');
 const cors = require('cors');
 require('dotenv').config();
@@ -39,6 +40,26 @@ client.connect(err => {
                         res.send(result.insertCount > 0);
                     });
                 res.status(201).json({ message: "user registered successfully" });
+            }
+        }
+        catch (err) {
+            console.log(err);
+        }
+    })
+
+    app.post('/signIn', async (req, res) => {
+        try {
+            const { email, password } = req.body;
+            if (!email || !password) {
+                return res.status(400).json({ error: 'Please Fill up the input field' })
+            }
+
+            const userLogin = await vendorsCollection.findOne({ email: email, password:password });
+            // const token = userLogin.generateAuthToken();
+            if (!userLogin) {
+                res.status(400).json({error:"Invalid Credentials"});
+            } else {
+                res.json({ message:"User SignIn Successfully" });
             }
         }
         catch (err) {

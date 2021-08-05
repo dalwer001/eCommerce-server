@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const { MongoClient, ObjectId } = require('mongodb');
 const ObjectID = require('mongodb').ObjectId;
-
+const jwt=require('jsonwebtoken');
 const fileUpload = require('express-fileupload');
 const cors = require('cors');
 require('dotenv').config();
@@ -46,6 +46,31 @@ client.connect(err => {
             console.log(err);
         }
     })
+
+    app.post('/signIn', async (req, res) => {
+        try {
+            const { email, password } = req.body;
+            if (!email || !password) {
+                return res.status(400).json({ error: 'Please Fill up the input field' })
+            }
+
+            const userLogin = await vendorsCollection.findOne({ email: email, password:password });
+
+        //    const accessToken= jwt.sign(userLogin, process.env.ACCESS_TOKEN_SECRET);
+        //    res.json({accessToken:accessToken})
+            // const token = userLogin.generateAuthToken();
+            if (!userLogin) {
+                res.status(400).json({error:"Invalid Credentials"});
+            } else {
+                res.json({ message:"User SignIn Successfully" });
+            }
+        }
+        catch (err) {
+            console.log(err);
+        }
+    })
+
+
 
 
     app.post('/addProduct', (req, res) => {
@@ -110,7 +135,7 @@ client.connect(err => {
         const file = req.files.file;
         const title = req.body.title;
         const description = req.body.description;
-        const price = req.body.price;
+        const mainPrice = req.body.mainPrice;
         const offer = req.body.offer;
         const size = req.body.size;
         const category = req.body.category;
@@ -125,7 +150,7 @@ client.connect(err => {
             img: Buffer.from(encImg, 'base64')
         };
 
-        offerCollection.insertOne({ title, description, price, offer, size, category, type, quantity, image })
+        offerCollection.insertOne({ title, description, mainPrice, offer, size, category, type, quantity, image })
             .then(result => {
                 res.send(result.insertCount > 0);
             })
@@ -137,5 +162,17 @@ client.connect(err => {
         res.send('Hello Mysterious!')
     });
 });
+
+// function authenticateToken(req,res,next){
+//     const authHeader = req.headers['authorization']
+//     const token = authHeader && authHeader.split(' ')[1]
+//     if(token == null) return res.sendStatus(401)
+
+//     jwt.verify(token,process.env.ACCESS_TOKEN_SECRET,(err,user) =>{
+//         if(err) return res.sendStatus(403)
+//         req.user = user
+//         next()
+//     })
+// }
 
 app.listen(process.env.PORT || port);

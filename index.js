@@ -55,6 +55,9 @@ client.connect(err => {
             }
 
             const userLogin = await vendorsCollection.findOne({ email: email, password:password });
+
+        //    const accessToken= jwt.sign(userLogin, process.env.ACCESS_TOKEN_SECRET);
+        //    res.json({accessToken:accessToken})
             // const token = userLogin.generateAuthToken();
             if (!userLogin) {
                 res.status(400).json({error:"Invalid Credentials"});
@@ -66,6 +69,8 @@ client.connect(err => {
             console.log(err);
         }
     })
+
+
 
 
     app.post('/addProduct', (req, res) => {
@@ -157,5 +162,17 @@ client.connect(err => {
         res.send('Hello Mysterious!')
     });
 });
+
+// function authenticateToken(req,res,next){
+//     const authHeader = req.headers['authorization']
+//     const token = authHeader && authHeader.split(' ')[1]
+//     if(token == null) return res.sendStatus(401)
+
+//     jwt.verify(token,process.env.ACCESS_TOKEN_SECRET,(err,user) =>{
+//         if(err) return res.sendStatus(403)
+//         req.user = user
+//         next()
+//     })
+// }
 
 app.listen(process.env.PORT || port);

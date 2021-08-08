@@ -156,6 +156,8 @@ client.connect(err => {
             })
     })
 
+    app.post('/addReview/:id')
+
 
 
     app.get('/', (req, res) => {

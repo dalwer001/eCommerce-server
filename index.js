@@ -88,14 +88,42 @@ client.connect(err => {
             })
     })
 
+// offer products----------------------------------------
+// add offer products
+app.post('/addOffer', (req, res) => {
 
+    const file = req.files.file;
+    const title = req.body.title;
+    const description = req.body.description;
+    const mainPrice = req.body.mainPrice;
+    const offer = req.body.offer;
+    const size = req.body.size;
+    const category = req.body.category;
+    const type = req.body.type;
+    const quantity = req.body.quantity;
+    const newImg = file.data;
+    const encImg = newImg.toString('base64')
+
+    var image = {
+        contentType: file.mimetype,
+        size: file.size,
+        img: Buffer.from(encImg, 'base64')
+    };
+
+    offerCollection.insertOne({ title, description, mainPrice, offer, size, category, type, quantity, image })
+        .then(result => {
+            res.send(result.insertCount > 0);
+        })
+})
+
+// get all offer products
     app.get('/offerProducts', (req, res) => {
         offerCollection.find({})
             .toArray((err, documents) => {
                 res.send(documents);
             })
     })
-
+// get single offer product
     app.get('/offerProduct/:id', (req, res) => {
         const id = ObjectID(req.params.id)
         offerCollection.find({ _id: id })
@@ -103,33 +131,19 @@ client.connect(err => {
                 res.send(result[0]);
             })
     })
+// add category
+app.post('/addOffer', (req, res) => {
 
+    const title = req.body.title;
+   
 
-    app.post('/addOffer', (req, res) => {
+    offerCollection.insertOne({ title, description, mainPrice, offer, size, category, type, quantity, image })
+        .then(result => {
+            res.send(result.insertCount > 0);
+        })
+})
 
-        const file = req.files.file;
-        const title = req.body.title;
-        const description = req.body.description;
-        const mainPrice = req.body.mainPrice;
-        const offer = req.body.offer;
-        const size = req.body.size;
-        const category = req.body.category;
-        const type = req.body.type;
-        const quantity = req.body.quantity;
-        const newImg = file.data;
-        const encImg = newImg.toString('base64')
-
-        var image = {
-            contentType: file.mimetype,
-            size: file.size,
-            img: Buffer.from(encImg, 'base64')
-        };
-
-        offerCollection.insertOne({ title, description, mainPrice, offer, size, category, type, quantity, image })
-            .then(result => {
-                res.send(result.insertCount > 0);
-            })
-    })
+  
 
 
 

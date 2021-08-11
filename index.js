@@ -34,6 +34,13 @@ client.connect((err) => {
     const reviewsCollection = client
         .db(`${process.env.DB_NAME}`)
         .collection("reviews");
+    const categoryCollection = client
+        .db(`${process.env.DB_NAME}`)
+        .collection("category");
+    const typeCollection = client
+        .db(`${process.env.DB_NAME}`)
+        .collection("type");
+
     console.log("SUCCESSFULLY DONE");
 
     app.post("/register", async (req, res) => {
@@ -211,6 +218,12 @@ client.connect((err) => {
             res.send(result.insertCount>0);
         })
     })
+        // get all review
+        app.get("/reviews", (req, res) => {
+            reviewsCollection.find({}).toArray((err, documents) => {
+                res.send(documents);
+            });
+        });
 
     // get reviews
     app.get("reviews/:id",(req,res)=>{
@@ -222,9 +235,37 @@ client.connect((err) => {
 
     // post category
 
-    app.post("/category",(req,res)=>{
-        
+    app.post("/addCategory",(req,res)=>{
+        const category = req.body.category;
+
+        categoryCollection.insertOne({category})
+        .then((result)=>{
+            res.send(result.insertCount>0);
+        })
     })
+    // get all category
+    app.get("/categories", (req, res) => {
+        categoryCollection.find({}).toArray((err, documents) => {
+            res.send(documents);
+        });
+    });
+
+    // post type
+
+    app.post("/addType",(req,res)=>{
+        const type = req.body.type;
+        typeCollection.insertOne({type})
+        .then((result)=>{
+            res.send(result.insertCount>0);
+        })
+    })
+    // get all type
+    app.get("/types", (req, res) => {
+        typeCollection.find({}).toArray((err, documents) => {
+            res.send(documents);
+        });
+    });
+
 
     app.post("/addAdmin", (req, res) => {
         const email = req.body.email;

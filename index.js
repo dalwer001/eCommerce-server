@@ -136,6 +136,18 @@ client.connect((err) => {
             });
     });
 
+    // products added
+    app.patch('/publishProduct/:id', (req, res) => {
+        const id = ObjectID(req.params.id)
+        productCollection.updateOne({ _id: id },
+            {
+                $set: { status: req.body.status }
+            })
+            .then(result => {
+                res.send(result.modifiedCount > 0)
+            })
+    })
+
     app.get("/products", (req, res) => {
         productCollection.find({}).toArray((err, documents) => {
             res.send(documents);
@@ -206,24 +218,26 @@ client.connect((err) => {
         const email = req.body.email;
         const description = req.body.description;
 
-        reviewsCollection.insertOne({id,name,email,description})
-        .then((result)=>{
-            res.send(result.insertCount>0);
-        })
+        reviewsCollection.insertOne({ id, name, email, description })
+            .then((result) => {
+                res.send(result.insertCount > 0);
+            })
     })
 
+
+
     // get reviews
-    app.get("reviews/:id",(req,res)=>{
+    app.get("reviews/:id", (req, res) => {
         const id = ObjectID(req.params.id);
-        reviewsCollection.find({id:id}).toArray((err,result)=>{
+        reviewsCollection.find({ id: id }).toArray((err, result) => {
             res.send(result[0]);
         })
     })
 
     // post category
 
-    app.post("/category",(req,res)=>{
-        
+    app.post("/category", (req, res) => {
+
     })
 
     app.post("/addAdmin", (req, res) => {
@@ -245,6 +259,7 @@ client.connect((err) => {
             res.send(admins.length > 0);
         });
     });
+
 
     app.get("/", (req, res) => {
         res.send("Hello Mysterious!");

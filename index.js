@@ -174,6 +174,18 @@ client.connect((err) => {
         });
     });
 
+    app.patch('/publishOfferProduct/:id', (req, res) => {
+        const id = ObjectID(req.params.id)
+        offerCollection.updateOne({ _id: id },
+            {
+                $set: { status: req.body.status }
+            })
+            .then(result => {
+                res.send(result.modifiedCount > 0)
+            })
+    })
+
+
     app.get("/offerProduct/:id", (req, res) => {
         const id = ObjectID(req.params.id);
         offerCollection.find({ _id: id }).toArray((err, result) => {

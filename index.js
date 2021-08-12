@@ -84,8 +84,8 @@ client.connect((err) => {
 
     app.post("/signIn", async (req, res) => {
         try {
-            const { email, password } = req.body;
-            if (!email || !password) {
+            const { email, password, status } = req.body;
+            if (!email || !password ||!status) {
                 return res
                     .status(400)
                     .json({ error: "Please Fill up the input field" });
@@ -94,6 +94,7 @@ client.connect((err) => {
             const userLogin = await vendorsCollection.findOne({
                 email: email,
                 password: password,
+                status:"Accepted"
             });
 
             //    const accessToken= jwt.sign(userLogin, process.env.ACCESS_TOKEN_SECRET);
@@ -108,6 +109,34 @@ client.connect((err) => {
             console.log(err);
         }
     });
+
+// get all vendor
+app.get("/vendors", (req, res) => {
+    vendorsCollection.find({}).toArray((err, documents) => {
+        res.send(documents);
+    });
+});
+
+app.get("/vendor/:id", (req, res) => {
+    const id = ObjectID(req.params.id);
+    vendorsCollection.find({ _id: id }).toArray((err, result) => {
+        res.send(result[0]);
+    });
+});
+
+
+  // accept vendor
+  app.patch('/acceptVendor/:id', (req, res) => {
+    const id = ObjectID(req.params.id)
+    vendorsCollection.updateOne({ _id: id },
+        {
+            $set: { status: req.body.status }
+        })
+        .then(result => {
+            res.send(result.modifiedCount > 0)
+        })
+})
+
 
     app.post("/addProduct", (req, res) => {
         const file = req.files.file;

@@ -1,3 +1,3 @@
 # eCommerce-server
 
-### API URL: https://sheltered-thicket-75703.herokuapp.com/
+### API URL: https://pacific-plateau-10670.herokuapp.com/

@@ -137,7 +137,7 @@ client.connect((err) => {
             })
     })
 
-
+    // add products
     app.post("/addProduct", (req, res) => {
         const newProduct = req.body;
         productCollection
@@ -147,7 +147,7 @@ client.connect((err) => {
             });
     });
 
-    // products added
+    // products publish/unpublish
     app.patch('/publishProduct/:id', (req, res) => {
         const id = ObjectID(req.params.id)
         productCollection.updateOne({ _id: id },
@@ -158,13 +158,13 @@ client.connect((err) => {
                 res.send(result.modifiedCount > 0)
             })
     })
-
+    // get all products
     app.get("/products", (req, res) => {
         productCollection.find({}).toArray((err, documents) => {
             res.send(documents);
         });
     });
-
+    // get single product
     app.get("/products/:id", (req, res) => {
         const id = ObjectID(req.params.id);
         productCollection.find({ _id: id }).toArray((err, result) => {
@@ -172,12 +172,30 @@ client.connect((err) => {
         });
     });
 
+    // add offer
+    app.post("/addOffer", (req, res) => {
+        const newOfferProduct = req.body;
+
+        offerCollection.insertOne(newOfferProduct)
+            .then((result) => {
+                res.send(result.insertCount > 0);
+            });
+    });
+
+    // get all offer
     app.get("/offerProducts", (req, res) => {
         offerCollection.find({}).toArray((err, documents) => {
             res.send(documents);
         });
     });
-
+    // get single offer
+    app.get("/offerProduct/:id", (req, res) => {
+        const id = ObjectID(req.params.id);
+        offerCollection.find({ _id: id }).toArray((err, result) => {
+            res.send(result[0]);
+        });
+    });
+    // offer publish/unpublish
     app.patch('/publishOfferProduct/:id', (req, res) => {
         const id = ObjectID(req.params.id)
         offerCollection.updateOne({ _id: id },
@@ -188,23 +206,6 @@ client.connect((err) => {
                 res.send(result.modifiedCount > 0)
             })
     })
-
-
-    app.get("/offerProduct/:id", (req, res) => {
-        const id = ObjectID(req.params.id);
-        offerCollection.find({ _id: id }).toArray((err, result) => {
-            res.send(result[0]);
-        });
-    });
-
-    app.post("/addOffer", (req, res) => {
-        const newOfferProduct = req.body;
-
-        offerCollection.insertOne(newOfferProduct)
-            .then((result) => {
-                res.send(result.insertCount > 0);
-            });
-    });
 
     // add Reviews 
 
@@ -226,9 +227,7 @@ client.connect((err) => {
         });
     });
 
-
-
-    // get reviews
+    // get single reviews
     app.get("reviews/:id", (req, res) => {
         const id = ObjectID(req.params.id);
         reviewsCollection.find({ id: id }).toArray((err, result) => {
@@ -269,20 +268,20 @@ client.connect((err) => {
         });
     });
 
-
+    // add admin
     app.post("/addAdmin", (req, res) => {
         const email = req.body.email;
         adminCollection.insertOne({ email }).then((result) => {
             res.send(result.insertedCount > 0);
         });
     });
-
+    // get admin
     app.get("/admin", (req, res) => {
         adminCollection.find({}).toArray((err, documents) => {
             res.send(documents);
         });
     });
-
+    // check admin
     app.post("/isAdmin", (req, res) => {
         const email = req.body.email;
         adminCollection.find({ email: email }).toArray((err, admins) => {
@@ -294,5 +293,10 @@ client.connect((err) => {
         res.send("Hello Mysterious!");
     });
 });
+
+
+
+
+
 
 app.listen(process.env.PORT || port);

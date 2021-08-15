@@ -137,7 +137,7 @@ app.get("/vendor/:id", (req, res) => {
         })
 })
 
-
+// add products
     app.post("/addProduct", (req, res) => {
         const file = req.files.file;
         const title = req.body.title;
@@ -172,7 +172,7 @@ app.get("/vendor/:id", (req, res) => {
             });
     });
 
-    // products added
+ // products publish/unpublish
     app.patch('/publishProduct/:id', (req, res) => {
         const id = ObjectID(req.params.id)
         productCollection.updateOne({ _id: id },
@@ -183,33 +183,20 @@ app.get("/vendor/:id", (req, res) => {
                 res.send(result.modifiedCount > 0)
             })
     })
-
+// get all products
     app.get("/products", (req, res) => {
         productCollection.find({}).toArray((err, documents) => {
             res.send(documents);
         });
     });
-
+// get single product
     app.get("/products/:id", (req, res) => {
         const id = ObjectID(req.params.id);
         productCollection.find({ _id: id }).toArray((err, result) => {
             res.send(result[0]);
         });
     });
-
-    app.get("/offerProducts", (req, res) => {
-        offerCollection.find({}).toArray((err, documents) => {
-            res.send(documents);
-        });
-    });
-
-    app.get("/offerProduct/:id", (req, res) => {
-        const id = ObjectID(req.params.id);
-        offerCollection.find({ _id: id }).toArray((err, result) => {
-            res.send(result[0]);
-        });
-    });
-
+// add offer 
     app.post("/addOffer", (req, res) => {
         const file = req.files.file;
         const title = req.body.title;
@@ -246,6 +233,21 @@ app.get("/vendor/:id", (req, res) => {
             });
     });
 
+// get all offer
+    app.get("/offerProducts", (req, res) => {
+        offerCollection.find({}).toArray((err, documents) => {
+            res.send(documents);
+        });
+    });
+// get sinngle offer
+    app.get("/offerProduct/:id", (req, res) => {
+        const id = ObjectID(req.params.id);
+        offerCollection.find({ _id: id }).toArray((err, result) => {
+            res.send(result[0]);
+        });
+    });
+
+   
     // add Reviews 
 
     app.post("/addReview", (req, res) => {
@@ -259,7 +261,7 @@ app.get("/vendor/:id", (req, res) => {
                 res.send(result.insertCount > 0);
             })
     })
-        // get all review
+ // get all review
         app.get("/reviews", (req, res) => {
             reviewsCollection.find({}).toArray((err, documents) => {
                 res.send(documents);
@@ -268,7 +270,7 @@ app.get("/vendor/:id", (req, res) => {
 
 
 
-    // get reviews
+    // get single reviews
     app.get("reviews/:id", (req, res) => {
         const id = ObjectID(req.params.id);
         reviewsCollection.find({ id: id }).toArray((err, result) => {
@@ -309,20 +311,20 @@ app.get("/vendor/:id", (req, res) => {
         });
     });
 
-
+// add admin
     app.post("/addAdmin", (req, res) => {
         const email = req.body.email;
         adminCollection.insertOne({ email }).then((result) => {
             res.send(result.insertedCount > 0);
         });
     });
-
+// get admin
     app.get("/admin", (req, res) => {
         adminCollection.find({}).toArray((err, documents) => {
             res.send(documents);
         });
     });
-
+// check admin
     app.post("/isAdmin", (req, res) => {
         const email = req.body.email;
         adminCollection.find({ email: email }).toArray((err, admins) => {

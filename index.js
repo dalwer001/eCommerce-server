@@ -197,31 +197,7 @@ app.get("/vendor/:id", (req, res) => {
         });
     });
 
-    app.get("/offerProducts", (req, res) => {
-        offerCollection.find({}).toArray((err, documents) => {
-            res.send(documents);
-        });
-    });
-
-    app.patch('/publishOfferProduct/:id', (req, res) => {
-        const id = ObjectID(req.params.id)
-        offerCollection.updateOne({ _id: id },
-            {
-                $set: { status: req.body.status }
-            })
-            .then(result => {
-                res.send(result.modifiedCount > 0)
-            })
-    })
-
-
-    app.get("/offerProduct/:id", (req, res) => {
-        const id = ObjectID(req.params.id);
-        offerCollection.find({ _id: id }).toArray((err, result) => {
-            res.send(result[0]);
-        });
-    });
-
+// add offer
     app.post("/addOffer", (req, res) => {
         const file = req.files.file;
         const title = req.body.title;
@@ -264,14 +240,24 @@ app.get("/vendor/:id", (req, res) => {
             res.send(documents);
         });
     });
-// get sinngle offer
+// get single offer
     app.get("/offerProduct/:id", (req, res) => {
         const id = ObjectID(req.params.id);
         offerCollection.find({ _id: id }).toArray((err, result) => {
             res.send(result[0]);
         });
     });
-
+// offer publish/unpublish
+app.patch('/publishOfferProduct/:id', (req, res) => {
+    const id = ObjectID(req.params.id)
+    offerCollection.updateOne({ _id: id },
+        {
+            $set: { status: req.body.status }
+        })
+        .then(result => {
+            res.send(result.modifiedCount > 0)
+        })
+})
    
     // add Reviews 
 

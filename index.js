@@ -85,7 +85,7 @@ client.connect((err) => {
     app.post("/signIn", async (req, res) => {
         try {
             const { email, password, status } = req.body;
-            if (!email || !password ||!status) {
+            if (!email || !password || !status) {
                 return res
                     .status(400)
                     .json({ error: "Please Fill up the input field" });
@@ -94,7 +94,7 @@ client.connect((err) => {
             const userLogin = await vendorsCollection.findOne({
                 email: email,
                 password: password,
-                status:"Accepted"
+                status: "Accepted"
             });
 
             //    const accessToken= jwt.sign(userLogin, process.env.ACCESS_TOKEN_SECRET);
@@ -110,63 +110,38 @@ client.connect((err) => {
         }
     });
 
-// get all vendor
-app.get("/vendors", (req, res) => {
-    vendorsCollection.find({}).toArray((err, documents) => {
-        res.send(documents);
+    // get all vendor
+    app.get("/vendors", (req, res) => {
+        vendorsCollection.find({}).toArray((err, documents) => {
+            res.send(documents);
+        });
     });
-});
 
-app.get("/vendor/:id", (req, res) => {
-    const id = ObjectID(req.params.id);
-    vendorsCollection.find({ _id: id }).toArray((err, result) => {
-        res.send(result[0]);
+    app.get("/vendor/:id", (req, res) => {
+        const id = ObjectID(req.params.id);
+        vendorsCollection.find({ _id: id }).toArray((err, result) => {
+            res.send(result[0]);
+        });
     });
-});
 
 
-  // accept vendor
-  app.patch('/acceptVendor/:id', (req, res) => {
-    const id = ObjectID(req.params.id)
-    vendorsCollection.updateOne({ _id: id },
-        {
-            $set: { status: req.body.status }
-        })
-        .then(result => {
-            res.send(result.modifiedCount > 0)
-        })
-})
+    // accept vendor
+    app.patch('/acceptVendor/:id', (req, res) => {
+        const id = ObjectID(req.params.id)
+        vendorsCollection.updateOne({ _id: id },
+            {
+                $set: { status: req.body.status }
+            })
+            .then(result => {
+                res.send(result.modifiedCount > 0)
+            })
+    })
 
 
     app.post("/addProduct", (req, res) => {
-        const file = req.files.file;
-        const title = req.body.title;
-        const description = req.body.description;
-        const price = req.body.price;
-        const size = req.body.size;
-        const category = req.body.category;
-        const type = req.body.type;
-        const quantity = req.body.quantity;
-        const newImg = file.data;
-        const encImg = newImg.toString("base64");
-
-        var image = {
-            contentType: file.mimetype,
-            size: file.size,
-            img: Buffer.from(encImg, "base64"),
-        };
-
+        const newProduct = req.body;
         productCollection
-            .insertOne({
-                title,
-                description,
-                price,
-                size,
-                category,
-                type,
-                quantity,
-                image,
-            })
+            .insertOne(newProduct)
             .then((result) => {
                 res.send(result.insertCount > 0);
             });
@@ -223,36 +198,9 @@ app.get("/vendor/:id", (req, res) => {
     });
 
     app.post("/addOffer", (req, res) => {
-        const file = req.files.file;
-        const title = req.body.title;
-        const description = req.body.description;
-        const mainPrice = req.body.mainPrice;
-        const offer = req.body.offer;
-        const size = req.body.size;
-        const category = req.body.category;
-        const type = req.body.type;
-        const quantity = req.body.quantity;
-        const newImg = file.data;
-        const encImg = newImg.toString("base64");
+        const newOfferProduct = req.body;
 
-        var image = {
-            contentType: file.mimetype,
-            size: file.size,
-            img: Buffer.from(encImg, "base64"),
-        };
-
-        offerCollection
-            .insertOne({
-                title,
-                description,
-                mainPrice,
-                offer,
-                size,
-                category,
-                type,
-                quantity,
-                image,
-            })
+        offerCollection.insertOne(newOfferProduct)
             .then((result) => {
                 res.send(result.insertCount > 0);
             });
@@ -271,12 +219,12 @@ app.get("/vendor/:id", (req, res) => {
                 res.send(result.insertCount > 0);
             })
     })
-        // get all review
-        app.get("/reviews", (req, res) => {
-            reviewsCollection.find({}).toArray((err, documents) => {
-                res.send(documents);
-            });
+    // get all review
+    app.get("/reviews", (req, res) => {
+        reviewsCollection.find({}).toArray((err, documents) => {
+            res.send(documents);
         });
+    });
 
 
 
@@ -290,13 +238,13 @@ app.get("/vendor/:id", (req, res) => {
 
     // post category
 
-    app.post("/addCategory",(req,res)=>{
+    app.post("/addCategory", (req, res) => {
         const category = req.body.category;
 
-        categoryCollection.insertOne({category})
-        .then((result)=>{
-            res.send(result.insertCount>0);
-        })
+        categoryCollection.insertOne({ category })
+            .then((result) => {
+                res.send(result.insertCount > 0);
+            })
     })
     // get all category
     app.get("/categories", (req, res) => {
@@ -307,12 +255,12 @@ app.get("/vendor/:id", (req, res) => {
 
     // post type
 
-    app.post("/addType",(req,res)=>{
+    app.post("/addType", (req, res) => {
         const type = req.body.type;
-        typeCollection.insertOne({type})
-        .then((result)=>{
-            res.send(result.insertCount>0);
-        })
+        typeCollection.insertOne({ type })
+            .then((result) => {
+                res.send(result.insertCount > 0);
+            })
     })
     // get all type
     app.get("/types", (req, res) => {

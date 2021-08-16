@@ -189,6 +189,14 @@ app.get("/vendor/:id", (req, res) => {
             res.send(documents);
         });
     });
+    //search for products
+    app.get('/products', (req, res, next) => {
+        const searchField = req.query.title;
+        productCollection.find({title:{$regex: searchField, $options: '$i'}})
+        .then(data => {
+            res.send(data);
+        })
+    })
 // get single product
     app.get("/products/:id", (req, res) => {
         const id = ObjectID(req.params.id);

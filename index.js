@@ -164,6 +164,15 @@ client.connect((err) => {
             res.send(documents);
         });
     });
+    // vendor get products
+    app.get('/product',(req, res) =>{
+        const email = req.query.email;
+        productCollection.find({email:email})
+        .toArray((err,documents) => {
+          res.send(documents);
+        })
+      })
+    
     // get single product
     app.get("/products/:id", (req, res) => {
         const id = ObjectID(req.params.id);
@@ -188,6 +197,14 @@ client.connect((err) => {
             res.send(documents);
         });
     });
+      // vendor get offer
+      app.get('/offerProduct',(req, res) =>{
+        const email = req.query.email;
+        offerCollection.find({email:email})
+        .toArray((err,documents) => {
+          res.send(documents);
+        })
+      })
     // get single offer
     app.get("/offerProduct/:id", (req, res) => {
         const id = ObjectID(req.params.id);

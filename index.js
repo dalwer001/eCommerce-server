@@ -164,6 +164,19 @@ client.connect((err) => {
             res.send(documents);
         });
     });
+    //delete products
+    app.delete('/deleteProducts/:id', (req, res) => {
+        const id = ObjectID(req.params.id)
+        productCollection.deleteOne({ _id: id })
+         .then(result => {
+          res.send(result.deletedCount > 0)
+              })
+          })
+    // app.get("/product", (req, res) => {
+    //     productCollection.find({}).toArray((err, documents) => {
+    //         res.send(documents);
+    //     });
+    // });
     // get single product
     app.get("/products/:id", (req, res) => {
         const id = ObjectID(req.params.id);
@@ -292,6 +305,13 @@ client.connect((err) => {
     app.get("/", (req, res) => {
         res.send("Hello Mysterious!");
     });
+    //search api routes
+    app.get("/search/:title", (req, res)=> {
+        var regex = new RegExp(req.params.title, "i");
+        productCollection.find({title: regex}).toArray((err, documents) => {
+            res.send(documents);
+        });
+    })
 });
 
 

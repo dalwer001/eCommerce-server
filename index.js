@@ -164,7 +164,6 @@ client.connect((err) => {
             res.send(documents);
         });
     });
-<<<<<<< HEAD
     //delete products
     app.delete('/deleteProducts/:id', (req, res) => {
         const id = ObjectID(req.params.id)
@@ -178,17 +177,6 @@ client.connect((err) => {
     //         res.send(documents);
     //     });
     // });
-=======
-    // vendor get products
-    app.get('/product',(req, res) =>{
-        const email = req.query.email;
-        productCollection.find({email:email})
-        .toArray((err,documents) => {
-          res.send(documents);
-        })
-      })
-    
->>>>>>> 81fc1b89d6244180d9c2a34038ae5f0c0bfc2ef1
     // get single product
     app.get("/products/:id", (req, res) => {
         const id = ObjectID(req.params.id);

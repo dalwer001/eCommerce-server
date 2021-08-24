@@ -172,11 +172,13 @@ client.connect((err) => {
           res.send(result.deletedCount > 0)
               })
           })
-    // app.get("/product", (req, res) => {
-    //     productCollection.find({}).toArray((err, documents) => {
-    //         res.send(documents);
-    //     });
-    // });
+      app.get('/product',(req, res) =>{
+        const email = req.query.email;
+        productCollection.find({email:email})
+        .toArray((err,documents) => {
+          res.send(documents);
+        })
+      })
     // get single product
     app.get("/products/:id", (req, res) => {
         const id = ObjectID(req.params.id);
@@ -184,7 +186,33 @@ client.connect((err) => {
             res.send(result[0]);
         });
     });
-
+// update products
+app.get('/updateP/:id', (req, res) => {
+    const id = ObjectID(req.params.id)
+    productCollection.find({ _id: id })
+      .toArray((err, documents) => {
+        res.send(documents[0]);
+      })
+  })
+  app.patch('/updateProduct/:id', (req, res) => {
+    const id = ObjectID(req.params.id)
+    productCollection.updateOne({ _id: id },
+      {
+        $set: {
+          title: req.body.title,
+          price: req.body.price,
+          size: req.body.size,
+          category: req.body.category,
+          type: req.body.type,
+          quantity: req.body.quantity,
+          description: req.body.description,
+          image: req.body.imageURL
+        }
+      })
+      .then(result => {
+        res.send(result.modifiedCount > 0)
+      })
+  })
     // add offer
     app.post("/addOffer", (req, res) => {
         const newOfferProduct = req.body;
@@ -216,6 +244,34 @@ client.connect((err) => {
             res.send(result[0]);
         });
     });
+    app.get('/updateOP/:id', (req, res) => {
+        const id = ObjectID(req.params.id)
+        offerCollection.find({ _id: id })
+          .toArray((err, documents) => {
+            res.send(documents[0]);
+          })
+      })
+      app.patch('/updateOfferProduct/:id', (req, res) => {
+        const id = ObjectID(req.params.id)
+        offerCollection.updateOne({ _id: id },
+          {
+            $set: {
+              title: req.body.title,
+              mainPrice: req.body.mainPrice,
+              offer: req.body.offer,
+              size: req.body.size,
+              category: req.body.category,
+              type: req.body.type,
+              quantity: req.body.quantity,
+              description: req.body.description,
+              image: req.body.imageURL
+            }
+          })
+          .then(result => {
+            res.send(result.modifiedCount > 0)
+          })
+      })
+    
     // offer publish/unpublish
     app.patch('/publishOfferProduct/:id', (req, res) => {
         const id = ObjectID(req.params.id)
@@ -266,6 +322,25 @@ client.connect((err) => {
                 res.send(result.insertCount > 0);
             })
     })
+    app.get('/updateCat/:id', (req, res) => {
+        const id = ObjectID(req.params.id)
+        categoryCollection.find({ _id: id })
+          .toArray((err, documents) => {
+            res.send(documents[0]);
+          })
+      })
+      app.patch('/updateCategory/:id', (req, res) => {
+        const id = ObjectID(req.params.id)
+        categoryCollection.updateOne({ _id: id },
+          {
+            $set: {
+              category: req.body.category,
+            }
+          })
+          .then(result => {
+            res.send(result.modifiedCount > 0)
+          })
+      })
     // get all category
     app.get("/categories", (req, res) => {
         categoryCollection.find({}).toArray((err, documents) => {

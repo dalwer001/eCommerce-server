@@ -206,7 +206,7 @@ app.get('/updateP/:id', (req, res) => {
           type: req.body.type,
           quantity: req.body.quantity,
           description: req.body.description,
-          image: req.body.imageURL
+        //   image: req.body.imageURL
         }
       })
       .then(result => {
@@ -264,7 +264,7 @@ app.get('/updateP/:id', (req, res) => {
               type: req.body.type,
               quantity: req.body.quantity,
               description: req.body.description,
-              image: req.body.imageURL
+            //   image: req.body.imageURL
             }
           })
           .then(result => {
@@ -363,6 +363,26 @@ app.get('/updateP/:id', (req, res) => {
             res.send(documents);
         });
     });
+    //update type
+    app.get('/updateT/:id', (req, res) => {
+        const id = ObjectID(req.params.id)
+        typeCollection.find({ _id: id })
+          .toArray((err, documents) => {
+            res.send(documents[0]);
+          })
+      })
+      app.patch('/updateType/:id', (req, res) => {
+        const id = ObjectID(req.params.id)
+        typeCollection.updateOne({ _id: id },
+          {
+            $set: {
+              type: req.body.type,
+            }
+          })
+          .then(result => {
+            res.send(result.modifiedCount > 0)
+          })
+      })
 
     // add admin
     app.post("/addAdmin", (req, res) => {

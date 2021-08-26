@@ -284,26 +284,6 @@ app.get('/updateP/:id', (req, res) => {
     app.patch('/updateOfferProduct/:id', (req, res) => {
         const id = ObjectID(req.params.id)
         offerCollection.updateOne({ _id: id },
-<<<<<<< HEAD
-          {
-            $set: {
-              title: req.body.title,
-              mainPrice: req.body.mainPrice,
-              offer: req.body.offer,
-              size: req.body.size,
-              category: req.body.category,
-              type: req.body.type,
-              quantity: req.body.quantity,
-              description: req.body.description,
-            //   image: req.body.imageURL
-            }
-          })
-          .then(result => {
-            res.send(result.modifiedCount > 0)
-          })
-      })
-    
-=======
             {
                 $set: {
                     title: req.body.title,
@@ -322,7 +302,6 @@ app.get('/updateP/:id', (req, res) => {
             })
     })
 
->>>>>>> 8f5bf93aeca0b4da4fd9bc0be13db48e7432713f
     // offer publish/unpublish
     app.patch('/publishOfferProduct/:id', (req, res) => {
         const id = ObjectID(req.params.id)

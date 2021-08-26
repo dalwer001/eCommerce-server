@@ -168,17 +168,17 @@ client.connect((err) => {
     app.delete('/deleteProducts/:id', (req, res) => {
         const id = ObjectID(req.params.id)
         productCollection.deleteOne({ _id: id })
-         .then(result => {
-          res.send(result.deletedCount > 0)
-              })
-          })
-      app.get('/product',(req, res) =>{
+            .then(result => {
+                res.send(result.deletedCount > 0)
+            })
+    })
+    app.get('/product', (req, res) => {
         const email = req.query.email;
-        productCollection.find({email:email})
-        .toArray((err,documents) => {
-          res.send(documents);
-        })
-      })
+        productCollection.find({ email: email })
+            .toArray((err, documents) => {
+                res.send(documents);
+            })
+    })
     // get single product
     app.get("/products/:id", (req, res) => {
         const id = ObjectID(req.params.id);
@@ -186,6 +186,7 @@ client.connect((err) => {
             res.send(result[0]);
         });
     });
+<<<<<<< HEAD
 // update products
 app.get('/updateP/:id', (req, res) => {
     const id = ObjectID(req.params.id)
@@ -213,6 +214,35 @@ app.get('/updateP/:id', (req, res) => {
         res.send(result.modifiedCount > 0)
       })
   })
+=======
+    // update products
+    app.get('/updateP/:id', (req, res) => {
+        const id = ObjectID(req.params.id)
+        productCollection.find({ _id: id })
+            .toArray((err, documents) => {
+                res.send(documents[0]);
+            })
+    })
+    app.patch('/updateProduct/:id', (req, res) => {
+        const id = ObjectID(req.params.id)
+        productCollection.updateOne({ _id: id },
+            {
+                $set: {
+                    title: req.body.title,
+                    price: req.body.price,
+                    size: req.body.size,
+                    category: req.body.category,
+                    type: req.body.type,
+                    quantity: req.body.quantity,
+                    description: req.body.description,
+                    image: req.body.imageURL
+                }
+            })
+            .then(result => {
+                res.send(result.modifiedCount > 0)
+            })
+    })
+>>>>>>> 8f5bf93aeca0b4da4fd9bc0be13db48e7432713f
     // add offer
     app.post("/addOffer", (req, res) => {
         const newOfferProduct = req.body;
@@ -229,14 +259,14 @@ app.get('/updateP/:id', (req, res) => {
             res.send(documents);
         });
     });
-      // vendor get offer
-      app.get('/offerProduct',(req, res) =>{
+    // vendor get offer
+    app.get('/offerProduct', (req, res) => {
         const email = req.query.email;
-        offerCollection.find({email:email})
-        .toArray((err,documents) => {
-          res.send(documents);
-        })
-      })
+        offerCollection.find({ email: email })
+            .toArray((err, documents) => {
+                res.send(documents);
+            })
+    })
     // get single offer
     app.get("/offerProduct/:id", (req, res) => {
         const id = ObjectID(req.params.id);
@@ -247,13 +277,14 @@ app.get('/updateP/:id', (req, res) => {
     app.get('/updateOP/:id', (req, res) => {
         const id = ObjectID(req.params.id)
         offerCollection.find({ _id: id })
-          .toArray((err, documents) => {
-            res.send(documents[0]);
-          })
-      })
-      app.patch('/updateOfferProduct/:id', (req, res) => {
+            .toArray((err, documents) => {
+                res.send(documents[0]);
+            })
+    })
+    app.patch('/updateOfferProduct/:id', (req, res) => {
         const id = ObjectID(req.params.id)
         offerCollection.updateOne({ _id: id },
+<<<<<<< HEAD
           {
             $set: {
               title: req.body.title,
@@ -272,6 +303,26 @@ app.get('/updateP/:id', (req, res) => {
           })
       })
     
+=======
+            {
+                $set: {
+                    title: req.body.title,
+                    mainPrice: req.body.mainPrice,
+                    offer: req.body.offer,
+                    size: req.body.size,
+                    category: req.body.category,
+                    type: req.body.type,
+                    quantity: req.body.quantity,
+                    description: req.body.description,
+                    image: req.body.imageURL
+                }
+            })
+            .then(result => {
+                res.send(result.modifiedCount > 0)
+            })
+    })
+
+>>>>>>> 8f5bf93aeca0b4da4fd9bc0be13db48e7432713f
     // offer publish/unpublish
     app.patch('/publishOfferProduct/:id', (req, res) => {
         const id = ObjectID(req.params.id)
@@ -325,22 +376,22 @@ app.get('/updateP/:id', (req, res) => {
     app.get('/updateCat/:id', (req, res) => {
         const id = ObjectID(req.params.id)
         categoryCollection.find({ _id: id })
-          .toArray((err, documents) => {
-            res.send(documents[0]);
-          })
-      })
-      app.patch('/updateCategory/:id', (req, res) => {
+            .toArray((err, documents) => {
+                res.send(documents[0]);
+            })
+    })
+    app.patch('/updateCategory/:id', (req, res) => {
         const id = ObjectID(req.params.id)
         categoryCollection.updateOne({ _id: id },
-          {
-            $set: {
-              category: req.body.category,
-            }
-          })
-          .then(result => {
-            res.send(result.modifiedCount > 0)
-          })
-      })
+            {
+                $set: {
+                    category: req.body.category,
+                }
+            })
+            .then(result => {
+                res.send(result.modifiedCount > 0)
+            })
+    })
     // get all category
     app.get("/categories", (req, res) => {
         categoryCollection.find({}).toArray((err, documents) => {
@@ -409,17 +460,12 @@ app.get('/updateP/:id', (req, res) => {
         res.send("Hello Mysterious!");
     });
     //search api routes
-    app.get("/search/:title", (req, res)=> {
+    app.get("/search/:title", (req, res) => {
         var regex = new RegExp(req.params.title, "i");
-        productCollection.find({title: regex}).toArray((err, documents) => {
+        productCollection.find({ title: regex }).toArray((err, documents) => {
             res.send(documents);
         });
     })
 });
-
-
-
-
-
 
 app.listen(process.env.PORT || port);

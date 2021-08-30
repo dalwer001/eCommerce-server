@@ -40,6 +40,9 @@ client.connect((err) => {
     const typeCollection = client
         .db(`${process.env.DB_NAME}`)
         .collection("type");
+    const deliveriesCollection = client
+        .db(`${process.env.DB_NAME}`)
+        .collection("deliveries");
 
     console.log("SUCCESSFULLY DONE");
 
@@ -109,6 +112,7 @@ client.connect((err) => {
             console.log(err);
         }
     });
+
 
     // get all vendor
     app.get("/vendors", (req, res) => {
@@ -186,6 +190,7 @@ client.connect((err) => {
             res.send(result[0]);
         });
     });
+
     // update products
     app.get('/updateP/:id', (req, res) => {
         const id = ObjectID(req.params.id)
@@ -367,22 +372,41 @@ client.connect((err) => {
     app.get('/updateT/:id', (req, res) => {
         const id = ObjectID(req.params.id)
         typeCollection.find({ _id: id })
-          .toArray((err, documents) => {
-            res.send(documents[0]);
-          })
-      })
-      app.patch('/updateType/:id', (req, res) => {
+            .toArray((err, documents) => {
+                res.send(documents[0]);
+            })
+    })
+    app.patch('/updateType/:id', (req, res) => {
         const id = ObjectID(req.params.id)
         typeCollection.updateOne({ _id: id },
-          {
-            $set: {
-              type: req.body.type,
+            {
+                $set: {
+                    type: req.body.type,
+                }
+            })
+            .then(result => {
+                res.send(result.modifiedCount > 0)
+            })
+    })
+
+    // Delivery post
+    app.post("/addDelivery", (req, res) => {
+        const delivery = req.body;
+        deliveriesCollection.insertOne(delivery)
+            .then(result => {
+                res.send(result.insertCount > 0);
             }
-          })
-          .then(result => {
-            res.send(result.modifiedCount > 0)
-          })
-      })
+            )
+    })
+
+    // Delivery get
+    app.get("/delivery", (req, res) => {
+        const email = req.query.email;
+        deliveriesCollection.find({ email: email })
+            .toArray((err, documents) => {
+                res.send(documents);
+            })
+    })
 
     // add admin
     app.post("/addAdmin", (req, res) => {
@@ -404,6 +428,7 @@ client.connect((err) => {
             res.send(admins.length > 0);
         });
     });
+
 
     app.get("/", (req, res) => {
         res.send("Hello Mysterious!");

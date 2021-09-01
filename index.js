@@ -190,33 +190,33 @@ client.connect((err) => {
             res.send(result[0]);
         });
     });
-// update products
-app.get('/updateP/:id', (req, res) => {
-    const id = ObjectID(req.params.id)
-    productCollection.find({ _id: id })
-      .toArray((err, documents) => {
-        res.send(documents[0]);
-      })
-  })
-  app.patch('/updateProduct/:id', (req, res) => {
-    const id = ObjectID(req.params.id)
-    productCollection.updateOne({ _id: id },
-      {
-        $set: {
-          title: req.body.title,
-          price: req.body.price,
-          size: req.body.size,
-          category: req.body.category,
-          type: req.body.type,
-          quantity: req.body.quantity,
-          description: req.body.description,
-        //   image: req.body.imageURL
-        }
-      })
-      .then(result => {
-        res.send(result.modifiedCount > 0)
-      })
-  })
+    // update products
+    app.get('/updateP/:id', (req, res) => {
+        const id = ObjectID(req.params.id)
+        productCollection.find({ _id: id })
+            .toArray((err, documents) => {
+                res.send(documents[0]);
+            })
+    })
+    app.patch('/updateProduct/:id', (req, res) => {
+        const id = ObjectID(req.params.id)
+        productCollection.updateOne({ _id: id },
+            {
+                $set: {
+                    title: req.body.title,
+                    price: req.body.price,
+                    size: req.body.size,
+                    category: req.body.category,
+                    type: req.body.type,
+                    quantity: req.body.quantity,
+                    description: req.body.description,
+                    //   image: req.body.imageURL
+                }
+            })
+            .then(result => {
+                res.send(result.modifiedCount > 0)
+            })
+    })
     // add offer
     app.post("/addOffer", (req, res) => {
         const newOfferProduct = req.body;
@@ -258,24 +258,24 @@ app.get('/updateP/:id', (req, res) => {
     app.patch('/updateOfferProduct/:id', (req, res) => {
         const id = ObjectID(req.params.id)
         offerCollection.updateOne({ _id: id },
-          {
-            $set: {
-              title: req.body.title,
-              mainPrice: req.body.mainPrice,
-              offer: req.body.offer,
-              size: req.body.size,
-              category: req.body.category,
-              type: req.body.type,
-              quantity: req.body.quantity,
-              description: req.body.description,
-            //   image: req.body.imageURL
-            }
-          })
-          .then(result => {
-            res.send(result.modifiedCount > 0)
-          })
-      })
-    
+            {
+                $set: {
+                    title: req.body.title,
+                    mainPrice: req.body.mainPrice,
+                    offer: req.body.offer,
+                    size: req.body.size,
+                    category: req.body.category,
+                    type: req.body.type,
+                    quantity: req.body.quantity,
+                    description: req.body.description,
+                    //   image: req.body.imageURL
+                }
+            })
+            .then(result => {
+                res.send(result.modifiedCount > 0)
+            })
+    })
+
     // offer publish/unpublish
     app.patch('/publishOfferProduct/:id', (req, res) => {
         const id = ObjectID(req.params.id)
@@ -391,11 +391,23 @@ app.get('/updateP/:id', (req, res) => {
     // Delivery post
     app.post("/addDelivery", (req, res) => {
         const delivery = req.body;
-        deliveriesCollection.insertOne(delivery)
-            .then(result => {
-                res.send(result.insertCount > 0);
+
+        try {
+            const userExist = await deliveriesCollection.findOne({ email: delivery.email });
+            if (userExist) {
+                return res.status(422).json({ error: "Address already Exist" });
             }
-            )
+            else {
+                deliveriesCollection.insertOne(delivery)
+                    .then(result => {
+                        res.send(result.insertCount > 0);
+                    })
+                res.status(201).json({ message: "Address added successfully" });
+            }
+        }
+        catch (err) {
+            console.log(err);
+        }
     })
 
     // Delivery get

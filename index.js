@@ -220,7 +220,7 @@ app.get('/updateP/:id', (req, res) => {
           type: req.body.type,
           quantity: req.body.quantity,
           description: req.body.description,
-        //   image: req.body.imageURL
+          image: req.body.imageURL
         }
       })
       .then(result => {
@@ -282,7 +282,7 @@ app.get('/updateP/:id', (req, res) => {
               type: req.body.type,
               quantity: req.body.quantity,
               description: req.body.description,
-            //   image: req.body.imageURL
+              imageURL: req.body.imageURL,
             }
           })
           .then(result => {
@@ -353,6 +353,7 @@ app.get('/updateP/:id', (req, res) => {
         {
           $set: {
             category: req.body.category,
+            imageURL: req.body.imageURL,
           },
         }
       )

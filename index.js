@@ -1,15 +1,15 @@
-const express = require('express');
+const express = require("express");
 const app = express();
-const { MongoClient, ObjectId } = require('mongodb');
-const ObjectID = require('mongodb').ObjectId;
-const fileUpload = require('express-fileupload');
-const cors = require('cors');
-require('dotenv').config();
+const { MongoClient, ObjectId } = require("mongodb");
+const ObjectID = require("mongodb").ObjectId;
+const fileUpload = require("express-fileupload");
+const cors = require("cors");
+require("dotenv").config();
 
 const port = 5000;
 
 app.use(cors());
-app.use(express.urlencoded({ extended: false }))
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(fileUpload());
 
@@ -97,7 +97,7 @@ client.connect((err) => {
             const userLogin = await vendorsCollection.findOne({
                 email: email,
                 password: password,
-                status: "Accepted"
+                status: "Accepted",
             });
 
             //    const accessToken= jwt.sign(userLogin, process.env.ACCESS_TOKEN_SECRET);
@@ -121,6 +121,7 @@ client.connect((err) => {
         });
     });
 
+
     app.get("/vendor/:id", (req, res) => {
         const id = ObjectID(req.params.id);
         vendorsCollection.find({ _id: id }).toArray((err, result) => {
@@ -128,40 +129,43 @@ client.connect((err) => {
         });
     });
 
-
     // accept vendor
-    app.patch('/acceptVendor/:id', (req, res) => {
-        const id = ObjectID(req.params.id)
-        vendorsCollection.updateOne({ _id: id },
-            {
-                $set: { status: req.body.status }
-            })
-            .then(result => {
-                res.send(result.modifiedCount > 0)
-            })
-    })
+    app.patch("/acceptVendor/:id", (req, res) => {
+        const id = ObjectID(req.params.id);
+        vendorsCollection
+            .updateOne(
+                { _id: id },
+                {
+                    $set: { status: req.body.status },
+                }
+            )
+            .then((result) => {
+                res.send(result.modifiedCount > 0);
+            });
+    });
 
     // add products
     app.post("/addProduct", (req, res) => {
         const newProduct = req.body;
-        productCollection
-            .insertOne(newProduct)
-            .then((result) => {
-                res.send(result.insertCount > 0);
-            });
+        productCollection.insertOne(newProduct).then((result) => {
+            res.send(result.insertCount > 0);
+        });
     });
 
     // products publish/unpublish
-    app.patch('/publishProduct/:id', (req, res) => {
-        const id = ObjectID(req.params.id)
-        productCollection.updateOne({ _id: id },
-            {
-                $set: { status: req.body.status }
-            })
-            .then(result => {
-                res.send(result.modifiedCount > 0)
-            })
-    })
+    app.patch("/publishProduct/:id", (req, res) => {
+        const id = ObjectID(req.params.id);
+        productCollection
+            .updateOne(
+                { _id: id },
+                {
+                    $set: { status: req.body.status },
+                }
+            )
+            .then((result) => {
+                res.send(result.modifiedCount > 0);
+            });
+    });
     // get all products
     app.get("/products", (req, res) => {
         productCollection.find({}).toArray((err, documents) => {
@@ -169,20 +173,18 @@ client.connect((err) => {
         });
     });
     //delete products
-    app.delete('/deleteProducts/:id', (req, res) => {
-        const id = ObjectID(req.params.id)
-        productCollection.deleteOne({ _id: id })
-            .then(result => {
-                res.send(result.deletedCount > 0)
-            })
-    })
-    app.get('/product', (req, res) => {
+    app.delete("/deleteProducts/:id", (req, res) => {
+        const id = ObjectID(req.params.id);
+        productCollection.deleteOne({ _id: id }).then((result) => {
+            res.send(result.deletedCount > 0);
+        });
+    });
+    app.get("/product", (req, res) => {
         const email = req.query.email;
-        productCollection.find({ email: email })
-            .toArray((err, documents) => {
-                res.send(documents);
-            })
-    })
+        productCollection.find({ email: email }).toArray((err, documents) => {
+            res.send(documents);
+        });
+    });
     // get single product
     app.get("/products/:id", (req, res) => {
         const id = ObjectID(req.params.id);
@@ -190,6 +192,14 @@ client.connect((err) => {
             res.send(result[0]);
         });
     });
+    // update products
+    app.get("/updateP/:id", (req, res) => {
+        const id = ObjectID(req.params.id);
+        productCollection.find({ _id: id }).toArray((err, documents) => {
+            res.send(documents[0]);
+        });
+    });
+
     // update products
     app.get('/updateP/:id', (req, res) => {
         const id = ObjectID(req.params.id)
@@ -221,10 +231,9 @@ client.connect((err) => {
     app.post("/addOffer", (req, res) => {
         const newOfferProduct = req.body;
 
-        offerCollection.insertOne(newOfferProduct)
-            .then((result) => {
-                res.send(result.insertCount > 0);
-            });
+        offerCollection.insertOne(newOfferProduct).then((result) => {
+            res.send(result.insertCount > 0);
+        });
     });
 
     // get all offer
@@ -234,18 +243,23 @@ client.connect((err) => {
         });
     });
     // vendor get offer
-    app.get('/offerProduct', (req, res) => {
+    app.get("/offerProduct", (req, res) => {
         const email = req.query.email;
-        offerCollection.find({ email: email })
-            .toArray((err, documents) => {
-                res.send(documents);
-            })
-    })
+        offerCollection.find({ email: email }).toArray((err, documents) => {
+            res.send(documents);
+        });
+    });
     // get single offer
     app.get("/offerProduct/:id", (req, res) => {
         const id = ObjectID(req.params.id);
         offerCollection.find({ _id: id }).toArray((err, result) => {
             res.send(result[0]);
+        });
+    });
+    app.get("/updateOP/:id", (req, res) => {
+        const id = ObjectID(req.params.id);
+        offerCollection.find({ _id: id }).toArray((err, documents) => {
+            res.send(documents[0]);
         });
     });
     app.get('/updateOP/:id', (req, res) => {
@@ -288,7 +302,7 @@ client.connect((err) => {
             })
     })
 
-    // add Reviews 
+    // add Reviews
 
     app.post("/addReview", (req, res) => {
         const id = req.body.id;
@@ -296,11 +310,12 @@ client.connect((err) => {
         const email = req.body.email;
         const description = req.body.description;
 
-        reviewsCollection.insertOne({ id, name, email, description })
+        reviewsCollection
+            .insertOne({ id, name, email, description })
             .then((result) => {
                 res.send(result.insertCount > 0);
-            })
-    })
+            });
+    });
     // get all review
     app.get("/reviews", (req, res) => {
         reviewsCollection.find({}).toArray((err, documents) => {
@@ -313,38 +328,38 @@ client.connect((err) => {
         const id = ObjectID(req.params.id);
         reviewsCollection.find({ id: id }).toArray((err, result) => {
             res.send(result[0]);
-        })
-    })
+        });
+    });
 
     // post category
 
     app.post("/addCategory", (req, res) => {
-        const category = req.body.category;
-
-        categoryCollection.insertOne({ category })
-            .then((result) => {
-                res.send(result.insertCount > 0);
-            })
-    })
-    app.get('/updateCat/:id', (req, res) => {
-        const id = ObjectID(req.params.id)
-        categoryCollection.find({ _id: id })
-            .toArray((err, documents) => {
-                res.send(documents[0]);
-            })
-    })
-    app.patch('/updateCategory/:id', (req, res) => {
-        const id = ObjectID(req.params.id)
-        categoryCollection.updateOne({ _id: id },
-            {
-                $set: {
-                    category: req.body.category,
+        const category = req.body;
+        categoryCollection.insertOne(category).then((result) => {
+            res.send(result.insertCount > 0);
+        });
+    });
+    app.get("/updateCat/:id", (req, res) => {
+        const id = ObjectID(req.params.id);
+        categoryCollection.find({ _id: id }).toArray((err, documents) => {
+            res.send(documents[0]);
+        });
+    });
+    app.patch("/updateCategory/:id", (req, res) => {
+        const id = ObjectID(req.params.id);
+        categoryCollection
+            .updateOne(
+                { _id: id },
+                {
+                    $set: {
+                        category: req.body.category,
+                    },
                 }
-            })
-            .then(result => {
-                res.send(result.modifiedCount > 0)
-            })
-    })
+            )
+            .then((result) => {
+                res.send(result.modifiedCount > 0);
+            });
+    });
     // get all category
     app.get("/categories", (req, res) => {
         categoryCollection.find({}).toArray((err, documents) => {
@@ -356,11 +371,10 @@ client.connect((err) => {
 
     app.post("/addType", (req, res) => {
         const type = req.body.type;
-        typeCollection.insertOne({ type })
-            .then((result) => {
-                res.send(result.insertCount > 0);
-            })
-    })
+        typeCollection.insertOne({ type }).then((result) => {
+            res.send(result.insertCount > 0);
+        });
+    });
     // get all type
     app.get("/types", (req, res) => {
         typeCollection.find({}).toArray((err, documents) => {
@@ -440,7 +454,6 @@ client.connect((err) => {
         });
     });
 
-
     app.get("/", (req, res) => {
         res.send("Hello Mysterious!");
     });
@@ -450,7 +463,8 @@ client.connect((err) => {
         productCollection.find({ title: regex }).toArray((err, documents) => {
             res.send(documents);
         });
-    })
+    });
+
 });
 
 app.listen(process.env.PORT || port);

@@ -403,7 +403,7 @@ client.connect((err) => {
     })
 
     // Delivery post
-    app.post("/addDelivery", (req, res) => {
+    app.post("/addDelivery", async(req, res) => {
         const delivery = req.body;
 
         try {

@@ -404,7 +404,7 @@ app.get('/updateP/:id', (req, res) => {
     })
 
     // Delivery post
-    app.post("/addDelivery",async (req, res) => {
+    app.post("/addDelivery", async(req, res) => {
         const delivery = req.body;
 
         try {

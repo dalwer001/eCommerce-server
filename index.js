@@ -353,7 +353,7 @@ app.get('/updateP/:id', (req, res) => {
                 {
                     $set: {
                         category: req.body.category,
-                        image: req.body.imageURL
+                       
                     },
                 }
             )
@@ -424,6 +424,8 @@ app.get('/updateP/:id', (req, res) => {
             console.log(err);
         }
     });
+// payment
+
 
     // Delivery get
     app.get("/delivery", (req, res) => {
